@@ -1,0 +1,182 @@
+
+Select ( {[Produto].[Categoria].Members} ) on Rows,
+( {[Measures].[Faturamento], [Measures].[Faturamento Líquido]} ) on Columns
+from [COMPLETO] where ([Tempo].[Ano].&[2014])
+
+WITH
+MEMBER [Measures].[Novo Faturamento Líquido] AS
+'[Measures].[Faturamento] - [Measures].[Frete Rateio] - [Measures].[Imposto]'
+Select ( {[Produto].[Categoria].Members} ) on Rows,
+( {[Measures].[Faturamento], [Measures].[Faturamento Líquido], [Novo Faturamento Líquido]} ) on Columns
+from [COMPLETO] where ([Tempo].[Ano].&[2014])
+
+WITH
+MEMBER [Measures].[Novo Faturamento Líquido] AS
+'[Measures].[Faturamento] - [Measures].[Frete Rateio] - [Measures].[Imposto]'
+MEMBER [Measures].[Variação Faturamento] AS
+'[Measures].[Novo Faturamento Líquido] / [Measures].[Faturamento]'
+Select ( {[Produto].[Categoria].Members} ) on Rows,
+( {[Measures].[Faturamento], [Measures].[Faturamento Líquido], [Novo Faturamento Líquido], [Variação Faturamento]} ) on Columns
+from [COMPLETO] where ([Tempo].[Ano].&[2014])
+
+WITH
+MEMBER [Measures].[Novo Faturamento Líquido] AS
+'[Measures].[Faturamento] - [Measures].[Frete Rateio] - [Measures].[Imposto]',
+FORMAT_STRING = '#,###.##'
+MEMBER [Measures].[Variação Faturamento] AS
+'[Measures].[Novo Faturamento Líquido] / [Measures].[Faturamento]',
+FORMAT_STRING = '#,###.## %'
+Select ( {[Produto].[Categoria].Members} ) on Rows,
+( {[Measures].[Faturamento], [Measures].[Faturamento Líquido], [Novo Faturamento Líquido], [Variação Faturamento]} ) on Columns
+from [COMPLETO] where ([Tempo].[Ano].&[2014])
+
+WITH
+MEMBER [Tempo].[Mës e Ano].[Var Fev Jan] AS
+'(1 - ([Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013] / [Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013]))',
+FORMAT_STRING = '#,###.00 %'
+SELECT ( {[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013], [Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013], [Tempo].[Mës e Ano].[Var Fev Jan]} ) on Columns,
+( {[Produto].[Marca].Members} ) on Rows
+from [COMPLETO]
+where ([Measures].[Faturamento])
+
+Select ( {
+[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[03-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[04-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[05-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[06-2013]
+} ) on Rows,
+[Measures].[Margem] On Columns
+from [COMPLETO]
+
+WITH MEMBER
+[Tempo].[Mës e Ano].[Soma] AS
+'SUM( {
+[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[03-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[04-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[05-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[06-2013] }
+,[Measures].[Margem])'
+Select ( {
+[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[03-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[04-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[05-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[06-2013]
+,[Tempo].[Mës e Ano].[Soma]
+} ) on Rows,
+[Measures].[Margem] On Columns
+from [COMPLETO]
+
+WITH MEMBER
+[Tempo].[Mës e Ano].[Média] AS
+'AVG( {
+[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[03-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[04-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[05-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[06-2013] }
+,[Measures].[Margem])'
+Select ( {
+[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[03-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[04-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[05-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[06-2013]
+,[Tempo].[Mës e Ano].[Média]
+} ) on Rows,
+[Measures].[Margem] On Columns
+from [COMPLETO]
+
+WITH MEMBER
+[Tempo].[Mës e Ano].[Máximo] AS
+'MAX( {
+[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[03-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[04-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[05-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[06-2013] }
+,[Measures].[Margem])'
+Select ( {
+[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[03-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[04-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[05-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[06-2013]
+,[Tempo].[Mës e Ano].[Máximo]
+} ) on Rows,
+[Measures].[Margem] On Columns
+from [COMPLETO]
+
+
+WITH SET [Seis Primeiros Meses de 2013] AS
+'{
+[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[01-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[02-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[01-2013]&[03-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[04-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[05-2013]
+,[Tempo].[Mës e Ano].&[2013]&[01-2013]&[02-2013]&[06-2013]
+}'
+MEMBER [Tempo].[Mës e Ano].[Soma dos Primeiros Meses de 2013] AS
+'SUM([Seis Primeiros Meses de 2013], [Faturamento Líquido])'
+Select ( { [Seis Primeiros Meses de 2013], [Tempo].[Mës e Ano].[Soma dos Primeiros Meses de 2013] } ) on Rows,
+[Measures].[Faturamento Líquido] On Columns
+from [COMPLETO]
+
+
+SELECT NON EMPTY
+( { [Tempo].[Hierarquia do Mês e Ano].[Ano].&[2013].&[Primeiro Semestre 2013].&[2013]&[01-2013]&[01-2013].Children } ) on Rows,
+( { [Measures].[Faturamento] } ) on Columns from [COMPLETO]
+
+WITH MEMBER [Measures].[Variação Trimestre] AS
+'[Measures].[Faturamento] /
+([Measures].[Faturamento], [Tempo].[Hierarquia do Mês e Ano].[Ano].&[2013].&[Primeiro Semestre 2013].&[2013]&[01-2013]&[01-2013])'
+, FORMAT_STRING = '#,###.## %'
+SELECT NON EMPTY
+( { [Tempo].[Hierarquia do Mês e Ano].[Ano].&[2013].&[Primeiro Semestre 2013].&[2013]&[01-2013]&[01-2013].Children } ) on Rows,
+( { [Measures].[Faturamento], [Measures].[Variação Trimestre] } ) on Columns from [COMPLETO]
+
+
+WITH MEMBER [Measures].[Variação Trimestre] AS
+'[Measures].[Faturamento] /
+([Measures].[Faturamento], [Tempo].[Hierarquia do Mês e Ano].Currentmember.Parent)'
+, FORMAT_STRING = '#,###.## %'
+SELECT NON EMPTY
+( { [Tempo].[Hierarquia do Mês e Ano].[Ano].&[2013].&[Primeiro Semestre 2013].&[2013]&[01-2013]&[01-2013].Children } ) on Rows,
+( { [Measures].[Faturamento], [Measures].[Variação Trimestre] } ) on Columns
+from [COMPLETO]
+
+WITH MEMBER [Measures].[Variação Trimestre] AS
+'[Measures].[Faturamento] /
+([Measures].[Faturamento], [Tempo].[Hierarquia do Mês e Ano].Currentmember.Parent)'
+, FORMAT_STRING = '#,###.## %'
+MEMBER [Measures].[Variação Semestre] AS
+'[Measures].[Faturamento] /
+([Measures].[Faturamento], [Tempo].[Hierarquia do Mês e Ano].Currentmember.Parent.Parent)'
+, FORMAT_STRING = '#,###.## %'
+MEMBER [Measures].[Variação Ano] AS
+'[Measures].[Faturamento] /
+([Measures].[Faturamento], [Tempo].[Hierarquia do Mês e Ano].Currentmember.Parent.Parent.PArent)'
+, FORMAT_STRING = '#,###.## %'
+SELECT NON EMPTY
+( { [Tempo].[Hierarquia do Mês e Ano].[Nível Mës e Ano].Members } ) on Rows,
+( { [Measures].[Faturamento], [Measures].[Variação Trimestre], [Measures].[Variação Semestre], [Measures].[Variação Ano] } ) on Columns
+from [COMPLETO]
+
+WITH MEMBER [Measures].[Participação de Vendas por Fábrica] AS
+' [Measures].[Faturamento] / 
+( [Measures].[Faturamento], [Fábrica].[Hierarquia das Fábricas].Currentmember.Parent )'
+, FORMAT_STRING = '#,###.## %'
+SELECT NON EMPTY 
+({[Fábrica].[Hierarquia das Fábricas].[Nível Fábrica].Members}) on Rows,
+({[Measures].[Faturamento], [Measures].[Participação de Vendas por Fábrica]}) on Columns from [COMPLETO]
+WHERE [Tempo].[Hierarquia do Mês e Ano].[Ano].&[2014]

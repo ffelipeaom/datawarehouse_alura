@@ -1,0 +1,61 @@
+
+Select ( { [Cliente].[Hierarquia Geográfica].[Nível Cidade].Members } ) on Rows,
+( { [Measures].[Faturamento] } ) on Columns
+from [COMPLETO] where ([Tempo].[Hierarquia do Mês e Ano].[Ano].&[2014])
+
+WITH
+SET [CLIENTES] AS
+'ORDER([Cliente].[Hierarquia Geográfica].[Nível Cliente], [Measures].[Faturamento], BDESC)'
+MEMBER [Measures].[Posição no Rank] AS
+'RANK([Cliente].[Hierarquia Geográfica].Currentmember, [CLIENTES])', FORMAT_STRING = '#;#;-'
+MEMBER [Measures].[% Vendas] AS
+'[Measures].[Faturamento]/([Measures].[Faturamento], [Cliente].[Hierarquia Geográfica].[All])', FORMAT_STRING = '##,###.00 %'
+MEMBER [Measures].[Faturamento Acumulado] AS
+'SUM(HEAD([CLIENTES], [Measures].[Posição no Rank]), [Measures].[Faturamento])', FORMAT_STRING = '#,###.00'
+MEMBER [Measures].[% Clientes] AS
+'[Measures].[Posição no Rank] / [CLIENTES].Count', FORMAT_STRING = '##,###.00 %'
+MEMBER [Measures].[% de Vendas Acumulada] AS
+'SUM(HEAD([CLIENTES], [Measures].[Posição no Rank]), [Measures].[% Vendas])', FORMAT_STRING = '##,###.00 %'
+MEMBER [Measures].[Faturamento de Vendas] AS
+'[Measures].[Faturamento]', FORMAT_STRING = '#,###.00'
+Select ( { [CLIENTES] } ) on Rows,
+({
+[Measures].[Faturamento de Vendas],
+--[Measures].[Posição no Rank],
+--[Measures].[% Vendas],
+--[Measures].[Faturamento Acumulado],
+[Measures].[% de Vendas Acumulada],
+[Measures].[% Clientes]
+}) on Columns
+from [COMPLETO]
+where ([Tempo].[Hierarquia do Mês e Ano].[Ano].&[2014])
+
+
+
+--Construa um MDX que nos dê o valor da margem ordenado por marcas, do maior para o menor, no ano de 2014.
+WITH
+SET [MARCAS] AS
+'ORDER([Produto].[Hierarquia de Produtos].[Nível Marca], [Measures].[Margem], BDESC)'
+MEMBER [Measures].[Rank de Marcas] AS
+'RANK([Produto].[Hierarquia de Produtos].Currentmember, [MARCAS])', FORMAT_STRING = '#;#;-'
+MEMBER [Measures].[% Margem] AS
+'[Measures].[Margem]/([Measures].[Margem], [Produto].[Hierarquia de Produtos].[All])', FORMAT_STRING = "##,###.00 %"
+MEMBER [Measures].[Margem Acumulada] AS
+'SUM(HEAD([MARCAS], [Measures].[Rank de Marcas]), [Measures].[Margem])', FORMAT_STRING = '#,###.00'
+MEMBER [Measures].[% Produtos] AS
+'[Measures].[Rank de Marcas] / [MARCAS].Count', FORMAT_STRING = '##,###.00 %'
+MEMBER [Measures].[% Margem Acumulada] AS
+'SUM(HEAD([MARCAS], [Measures].[Rank de Marcas]), [Measures].[% Margem])', FORMAT_STRING = '##,###.00 %'
+MEMBER [Measures].[Margem por Marca] AS
+'[Measures].[Margem]', FORMAT_STRING = "#,###.00"
+SELECT ({ [MARCAS] }) On Rows,
+({
+[Measures].[Margem por Marca],
+--[Measures].[Rank de Marcas],
+--[Measures].[% Margem],
+--[Measures].[Margem Acumulada],
+[Measures].[% Margem Acumulada],
+[Measures].[% Produtos]
+}) on Columns
+from [COMPLETO]
+Where ([Tempo].[Ano].&[2014])
